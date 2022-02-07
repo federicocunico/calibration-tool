@@ -15,7 +15,9 @@ conda create --name calibration python=3.8
 conda activate calibration
 ```
 
-otherwise, install your python venv (or use your system installation (r u sure tho?))
+otherwise, install your python venv (or use your system installation (r u sure tho?)).
+
+After the env creation (both venv, conda, system, or whatever), just install the opencv bindings:
 
 ```
 pip install opencv-python
