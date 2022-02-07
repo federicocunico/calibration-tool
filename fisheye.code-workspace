@@ -1,0 +1,17 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "extensions": {
+        "recommendations": ["ms-python.python", "eamodio.gitlens", "mhutchie.git-graph"]
+    },
+    "settings": {
+        "python.formatting.autopep8Args": ["--max-line-length", "150", "--experimental"],
+		"python.formatting.provider": "black",
+		"python.formatting.blackPath": "black",
+        "python.formatting.blackArgs": ["--line-length", "150"],
+        "python.linting.enabled": true
+    }
+}
