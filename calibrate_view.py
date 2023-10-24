@@ -1,8 +1,10 @@
+import json
 import os
 import argparse
 
 import cv2
 import numpy as np
+from src.database import Database
 
 from src.homography.homography_utils import get_h_from_images, transform
 from src.opencv_utils import MousePointsClick, OpenCVWindow
@@ -52,8 +54,7 @@ def transform(points, homography):
 
 def main(args):
 
-    assert os.path.isfile(args.input), f"File not found: {args.input}"
-    assert os.path.isfile(args.plane), f"File not found: {args.plane}"
+    # TODO
 
     camera = args.input
     floor = cv2.imread(args.plane)
@@ -117,12 +118,19 @@ def main(args):
                     -1,
                 )
 
+def read_db():
+    with open(database_file, "r") as f:
+        cameras = json.load(f)
+    db = Database(**cameras)
+    return db
+
+def save_db(cameras):
+    with open(database_file, "w") as f:
+        json.dump(cameras, f, indent=4)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("input", type=str, help="The input video file")
-    parser.add_argument("plane", type=str, help="The plane image file")
-    args = parser.parse_args()
+    database_file = "cameras.json"
+    cameras = read_db()
 
     print("*" * 200)
     print("*")
@@ -132,4 +140,4 @@ if __name__ == "__main__":
     print("*")
     print("*" * 200)
 
-    main(args)
+    main(cameras)

@@ -1,0 +1,12 @@
+{
+  "cameras": [
+    {
+      "uri": "rtsp://....",
+      "pav_img": "pav_1.png"
+    },
+    {
+      "uri": "rtsp://....",
+      "pav_img": "pav_2.png"
+    }
+  ]
+}
