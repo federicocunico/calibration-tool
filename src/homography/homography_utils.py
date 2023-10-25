@@ -110,7 +110,7 @@ def transform(points, homography):
             np.asarray(points).reshape(
                 (-1, 1, 2)).astype(np.float32), homography
         )
-        out_pts: np.ndarray = res.reshape(points.shape).astype(np.int)
+        out_pts: np.ndarray = res.reshape(points.shape).astype(np.int32)
         return out_pts
     return None
 

@@ -1,12 +1,68 @@
 {
   "cameras": [
     {
-      "uri": "rtsp://....",
-      "pav_img": "pav_1.png"
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream1",
+      "pav_img": "images/planimetria.jpg"
     },
     {
-      "uri": "rtsp://....",
-      "pav_img": "pav_2.png"
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream2",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream1",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream2",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream1",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream2",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream1",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream2",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream1",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream2",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream1",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream2",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream1",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream2",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream1",
+      "pav_img": "images/planimetria.jpg"
+    },
+    {
+      "uri": "rtsp://fcunico:55578794@10.2.1.44/stream2",
+      "pav_img": "images/planimetria.jpg"
     }
   ]
 }

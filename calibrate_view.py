@@ -4,32 +4,19 @@ import argparse
 
 import cv2
 import numpy as np
-from src.database import Database
+from src.database_utils import save_db
+from src.database import Camera, Database
 
 from src.homography.homography_utils import get_h_from_images, transform
 from src.opencv_utils import MousePointsClick, OpenCVWindow
 
 
-def _to_filename(camera):
-    return (
-        camera.replace("\\", "")
-        .replace(".", "")
-        .replace("-", "")
-        .replace("@", "")
-        .replace(":", "")
-        .replace("/", "")
-    )
-
-
-def calibrate(frame, pav_img, h_file, camera, max_num_pts=4):
+def calibrate(frame, pav_img, camera: Camera, max_num_pts=4):
     h, pts1, pts2 = get_h_from_images(frame, pav_img, num_rect_pts=max_num_pts)
 
-    pts1_file = f"data/pts1__view_{_to_filename(camera)}.npy"
-    pts2_file = f"data/pts2__view_{_to_filename(camera)}.npy"
-
-    np.save(h_file, h)
-    np.save(pts1_file, pts1)
-    np.save(pts2_file, pts2)
+    camera.homography = h.tolist()
+    camera.image_pts = pts1.astype(int).tolist()
+    camera.pav_pts = pts2.astype(int).tolist()
 
     return h
 
@@ -44,27 +31,26 @@ def get_draw_pts(frame, num_pts=30):
 
 def transform(points, homography):
     if homography is not None:
-        res = cv2.perspectiveTransform(
-            np.asarray(points).reshape((-1, 1, 2)).astype(np.float32), homography
-        )
-        out_pts: np.ndarray = res.reshape(points.shape).astype(np.int)
+        res = cv2.perspectiveTransform(np.asarray(points).reshape((-1, 1, 2)).astype(np.float32), homography)
+        out_pts: np.ndarray = res.reshape(points.shape).astype(np.int32)
         return out_pts
     return None
 
 
-def main(args):
+def calibrate_camera(database: Database, camera_idx: int):
+    camera = database.cameras[camera_idx]
 
-    # TODO
+    assert os.path.isfile(camera.pav_img), f'Unable to open the floor image: "{camera.pav_img}"!'
 
-    camera = args.input
-    floor = cv2.imread(args.plane)
+    camera_uri = camera.uri
+    floor = cv2.imread(camera.pav_img)
 
     wname = "frame"
     wname_p = "floor"
 
-    cap = cv2.VideoCapture(camera)
+    cap = cv2.VideoCapture(camera_uri)
 
-    assert cap.isOpened(), f'Unable to open the camera: "{camera}"!'
+    assert cap.isOpened(), f'Unable to open the camera: "{camera_uri}"!'
 
     ret, frame = cap.read()
     if not ret:
@@ -73,11 +59,11 @@ def main(args):
     cv2.namedWindow(wname, cv2.WINDOW_NORMAL)
     cv2.resizeWindow(wname, 512, 512)
 
-    h_file = f"data/h__cam_{_to_filename(camera)}.npy"
     draw_pts = []
 
-    if os.path.isfile(h_file):
-        h = np.load(h_file)
+    h = np.asarray(camera.homography)
+    orig_frame = frame.copy()
+    orig_floor = floor.copy()
 
     while True:
         cv2.imshow(wname, frame)
@@ -85,14 +71,23 @@ def main(args):
         key = cv2.waitKey(10)
 
         if key == ord("c"):
-            h = calibrate(frame, floor, h_file, camera)
+            h = calibrate(orig_frame, orig_floor, camera)
+        if key == ord("s"):
+            # save!
+            save_db(database)
+
         elif key == ord("d"):
+            # reset frame for new points
+            frame = orig_frame.copy()
+            floor = orig_floor.copy()
+
             draw_pts = get_draw_pts(frame)
             print(f"Points: {draw_pts}")
             _h, w = frame.shape[0], frame.shape[1]
             norm_pts = []
             for pt in draw_pts:
                 norm_pts.append((pt[0] / _h, pt[1] / w))
+
         # Exit
         elif key == ord("q"):
             break
@@ -106,7 +101,7 @@ def main(args):
                 (255, 0, 0),
                 -1,
             )
-        if len(draw_pts) > 0:
+        if len(draw_pts) > 0 and h is not None and h.shape[0] > 0:
             center_out_pts = transform(draw_pts, h)
             # print(center_out_pts)
             for pt in center_out_pts:
@@ -118,26 +113,15 @@ def main(args):
                     -1,
                 )
 
-def read_db():
-    with open(database_file, "r") as f:
-        cameras = json.load(f)
-    db = Database(**cameras)
-    return db
+    cv2.destroyAllWindows()
+    cap.release()
 
-def save_db(cameras):
-    with open(database_file, "w") as f:
-        json.dump(cameras, f, indent=4)
 
-if __name__ == "__main__":
-    database_file = "cameras.json"
-    cameras = read_db()
+# if __name__ == "__main__":
+#     print("*" * 200)
+#     print("*")
+#     print("Press C to calibrate, D to draw points in order to show the calibration accuracy, S to save")
+#     print("*")
+#     print("*" * 200)
 
-    print("*" * 200)
-    print("*")
-    print(
-        "Press C to calibrate, D to draw points in order to show the calibration accuracy"
-    )
-    print("*")
-    print("*" * 200)
-
-    main(cameras)
+#     main(cameras)
